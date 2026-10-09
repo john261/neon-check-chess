@@ -107,7 +107,7 @@ function missionFor(lvl){
  if(kind===2)return{kind:'obstacle',obstacle:2,cells:Math.ceil((12+extra*2)/2),hits:12+extra*2,amount:12+extra*2,moves:movesFor(movesByKind[kind]),label:'Schmelze '+(12+extra*2)+' Eisschichten',detail:'Jede Eisschicht braucht einen Treffer. Nutze Reihen und Kettenreaktionen gezielt.'};
  if(kind===3)return{kind:'obstacle',obstacle:3,cells:6+extra,amount:6+extra,moves:movesFor(movesByKind[kind]),label:'Zerbrich '+(6+extra)+' Vasen',detail:'Jede Vase braucht zwei Treffer. Richte Kombinationen auf die markierten Felder.'};
  const dragons=3+Math.floor(extra/2);
- return{kind:'dragon',obstacle:4,cells:dragons,amount:dragons,moves:movesFor(movesByKind[kind]),label:'Besiege '+dragons+' Drachen',detail:'Jedes Drachenei braucht zwei Treffer zum Aufbrechen; danach hält der geschlüpfte Drache zwei weitere Treffer aus.'};
+ return{kind:'dragon',obstacle:4,cells:dragons,amount:dragons,moves:movesFor(movesByKind[kind]),label:'Besiege '+dragons+' Drachen',detail:'Ein Treffer lässt das Drachenei schlüpfen. Ein weiterer Treffer besiegt den Drachen.'};
 }
 function hasOpeningMatch(x,y,g){
  return (x>1&&board[y*N+x-1]===g&&board[y*N+x-2]===g)||
@@ -197,12 +197,12 @@ function placeMissionObjects(){
  if(!mission||(mission.kind!=='obstacle'&&mission.kind!=='dragon'))return;
  const candidates=[];for(let y=1;y<7;y++)for(let x=1;x<7;x++)candidates.push(y*N+x);
  for(let j=candidates.length-1;j>0;j--){let k=Math.floor(Math.random()*(j+1)),v=candidates[j];candidates[j]=candidates[k];candidates[k]=v}
- for(let n=0;n<mission.cells;n++){let i=candidates[n];obstacle[i]=mission.obstacle;obstacleHp[i]=mission.kind==='dragon'?2:mission.obstacle===2?Math.ceil(mission.hits/mission.cells):mission.obstacle===3?2:1}
+ for(let n=0;n<mission.cells;n++){let i=candidates[n];obstacle[i]=mission.obstacle;obstacleHp[i]=mission.kind==='dragon'?1:mission.obstacle===2?Math.ceil(mission.hits/mission.cells):mission.obstacle===3?2:1}
 }
 function damageGoal(i){
  if(mission.kind==='collect'){if(board[i]===mission.gem)goalRemaining=Math.max(0,goalRemaining-1);return}
  if(mission.kind==='dragon'){
-  if(obstacle[i]===4){obstacleHp[i]--;if(obstacleHp[i]<=0){obstacle[i]=5;obstacleHp[i]=2;burst(i,16);toast('Das Drachenei schlüpft! Jetzt den Drachen treffen.')}return}
+  if(obstacle[i]===4){obstacleHp[i]--;if(obstacleHp[i]<=0){obstacle[i]=5;obstacleHp[i]=1;burst(i,16);toast('Das Drachenei schlüpft! Jetzt den Drachen treffen.')}return}
   if(obstacle[i]===5){obstacleHp[i]--;if(obstacleHp[i]<=0){obstacle[i]=0;goalRemaining=Math.max(0,goalRemaining-1);burst(i,18)}return}
   return
  }
@@ -273,12 +273,11 @@ function drawObstacle(kind,hp,x,y,s){
  }
  else if(kind===3){ctx.fillStyle='#d79578';ctx.strokeStyle='#8b5a4c';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x+s*.4,y+s*.23);ctx.lineTo(x+s*.6,y+s*.23);ctx.lineTo(x+s*.58,y+s*.38);ctx.quadraticCurveTo(x+s*.73,y+s*.5,x+s*.7,y+s*.76);ctx.quadraticCurveTo(x+s*.5,y+s*.88,x+s*.3,y+s*.76);ctx.quadraticCurveTo(x+s*.27,y+s*.5,x+s*.42,y+s*.38);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#f2d7aa';ctx.fillRect(x+s*.4,y+s*.21,s*.2,s*.06)}
  else if(kind===4){
-  // A two-hit egg: its shell visibly cracks before the dragon hatches.
+  // The egg hatches on its first hit, so no extra crack stage is needed.
   const cx=x+s*.5,cy=y+s*.53;ctx.shadowColor='#35274d88';ctx.shadowBlur=4;
   const shell=ctx.createLinearGradient(x+s*.28,y+s*.32,x+s*.72,y+s*.78);shell.addColorStop(0,'#fff0c3');shell.addColorStop(.45,'#dcae62');shell.addColorStop(1,'#895735');
   ctx.fillStyle=shell;ctx.strokeStyle='#fff0bc';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(cx,cy,s*.28,s*.36,-.08,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;
   ctx.fillStyle='#8f61a5';ctx.beginPath();ctx.ellipse(cx,cy+s*.04,s*.13,s*.19,0,0,Math.PI*2);ctx.fill();
-  if(hp<2){ctx.strokeStyle='#fff8d6';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx-s*.03,cy-s*.33);ctx.lineTo(cx+s*.04,cy-s*.14);ctx.lineTo(cx-s*.03,cy-s*.02);ctx.lineTo(cx+s*.07,cy+s*.13);ctx.stroke()}
   ctx.fillStyle='#fff6d9';ctx.beginPath();ctx.arc(cx-s*.1,cy-s*.14,s*.035,0,Math.PI*2);ctx.fill()
  }
  else if(kind===5){
@@ -296,7 +295,7 @@ function rounded(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
 function draw(){
  let d=canvas.width/(canvas.clientWidth||1),w=canvas.width/d,h=canvas.height/d;ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,w,h);let pad=5,cell=(Math.min(w,h)-pad*2)/N;
  for(let y=0;y<N;y++)for(let x=0;x<N;x++){
-  let i=y*N+x,px=pad+x*cell,py=pad+y*cell;ctx.fillStyle=(x+y)%2?'#49c83c':'#83df52';rounded(px+1,py+1,cell-2,cell-2,Math.max(4,cell*.12));ctx.fill();ctx.strokeStyle=(x+y)%2?'#34a934':'#65c244';ctx.lineWidth=1.2;ctx.stroke();ctx.fillStyle='#ffffff22';rounded(px+3,py+3,cell-6,cell*.16,cell*.08);ctx.fill();
+  let i=y*N+x,px=pad+x*cell,py=pad+y*cell,darkTile=(x+y)%2===1;const tile=ctx.createLinearGradient(px,py,px+cell,py+cell);if(darkTile){tile.addColorStop(0,'#668879');tile.addColorStop(.52,'#4e7466');tile.addColorStop(1,'#3b6256')}else{tile.addColorStop(0,'#f2efdc');tile.addColorStop(.55,'#e4e8d2');tile.addColorStop(1,'#d3dfc2')}ctx.fillStyle=tile;rounded(px+1,py+1,cell-2,cell-2,Math.max(4,cell*.12));ctx.fill();ctx.strokeStyle=darkTile?'#31564a':'#bdcba9';ctx.lineWidth=1.2;ctx.stroke();ctx.strokeStyle=darkTile?'#ffffff24':'#ffffff99';ctx.lineWidth=1;rounded(px+3,py+3,cell-6,cell-6,Math.max(3,cell*.1));ctx.stroke();ctx.fillStyle=darkTile?'#ffffff18':'#ffffff4a';rounded(px+4,py+4,cell-8,cell*.14,cell*.07);ctx.fill();
   if(selected===i){ctx.strokeStyle='#fff1a4';ctx.lineWidth=3;rounded(px+3,py+3,cell-6,cell-6,cell*.15);ctx.stroke()}
   if(legal[i]){ctx.fillStyle='#fff8d4aa';ctx.beginPath();ctx.arc(px+cell/2,py+cell/2,cell*.1,0,Math.PI*2);ctx.fill()}
   let tx=px,ty=py,alpha=1,scale=1;if(animation&&animation.type==='swap'&&(i===animation.a||i===animation.b))continue;
@@ -379,7 +378,7 @@ function endCheck(){if(goalRemaining<=0)winLevel();else if(moves<=0)failLevel()}
 function damageGoal(i){
  if(mission.kind==='collect'){if(board[i]===mission.gem)goalRemaining=Math.max(0,goalRemaining-1);return}
  if(mission.kind==='dragon'){
-  if(obstacle[i]===4){obstacleHp[i]--;if(obstacleHp[i]<=0){obstacle[i]=5;obstacleHp[i]=2;burst(i,16);toast('Das Drachenei schlüpft! Jetzt den Drachen treffen.')}return}
+  if(obstacle[i]===4){obstacleHp[i]--;if(obstacleHp[i]<=0){obstacle[i]=5;obstacleHp[i]=1;burst(i,16);toast('Das Drachenei schlüpft! Jetzt den Drachen treffen.')}return}
   if(obstacle[i]===5){obstacleHp[i]--;if(obstacleHp[i]<=0){obstacle[i]=0;goalRemaining=Math.max(0,goalRemaining-1);burst(i,18)}return}
   return
  }
