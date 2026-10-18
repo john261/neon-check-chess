@@ -77,8 +77,47 @@ footer{text-align:center;margin-top:30px;color:#a8b5b3;font-size:9px;letter-spac
 @media(max-width:520px){.page{width:calc(100% - 20px)}header{margin-bottom:30px}.brand h1{font-size:16px}.time-tag{font-size:8px;padding:7px 9px}.hero{margin-bottom:23px}.hero p{font-size:13px}.card-inner{padding:16px}.game-card,.card-inner{min-height:330px}.card-content{grid-template-columns:1fr 42%;gap:10px}.copy h3{font-size:20px}.copy p{font-size:11px}.feature-list{font-size:9px}.play-link{min-height:37px;padding:0 10px;font-size:11px}.chess-preview span{font-size:clamp(13px,4vw,21px)}.puzzle-preview{padding:6px}.future-card .card-inner{padding:15px;min-height:90px}.future-card{min-height:90px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 </style>
+<style>
+body.dwarf-welcome-open{overflow:hidden}
+.dwarf-welcome{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:22px;background:linear-gradient(145deg,rgba(5,10,14,.79),rgba(8,15,18,.69)),url("emerald-glade.png") center/cover no-repeat;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);opacity:1;transition:opacity .45s ease}
+.dwarf-welcome.is-leaving{opacity:0;pointer-events:none}
+.dwarf-welcome-panel{position:relative;display:grid;grid-template-columns:minmax(240px,.9fr) minmax(300px,1.1fr);align-items:stretch;width:min(880px,100%);max-height:min(740px,calc(100vh - 44px));overflow:hidden;border:1px solid #e1bd7caa;border-radius:23px;background:linear-gradient(145deg,rgba(22,31,32,.97),rgba(10,15,20,.98));box-shadow:0 28px 90px #000b,0 0 48px #e0b26024,inset 0 1px #fff2;animation:dwarf-welcome-arrive .55s cubic-bezier(.2,.8,.2,1) both}
+.dwarf-welcome-panel:before{content:"";position:absolute;z-index:3;inset:8px;border:1px solid #f1d59b30;border-radius:16px;pointer-events:none}
+.dwarf-welcome-film{position:relative;display:grid;place-items:center;min-width:0;padding:18px;background:radial-gradient(ellipse at 50% 40%,#51432f 0,#26342f 50%,#10171a 100%);overflow:hidden}
+.dwarf-welcome-film:after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,#07101455,transparent 28%,transparent 70%,#05090dbb);pointer-events:none}
+.dwarf-welcome-film video{display:block;width:min(100%,345px);max-height:min(72vh,620px);aspect-ratio:9/16;object-fit:cover;border:1px solid #e6c7809c;border-radius:15px;background:#080b0d;box-shadow:0 12px 40px #0009,0 0 28px #e5b75c25}
+.dwarf-welcome-label{position:absolute;z-index:2;left:29px;right:29px;bottom:28px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #e8c88045;border-radius:999px;background:#101719d9;color:#f3e3c2;font-size:8px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;backdrop-filter:blur(8px)}
+.dwarf-welcome-label i{width:7px;height:7px;flex:none;border-radius:50%;background:#e9bd70;box-shadow:0 0 11px #e9bd70;animation:dwarf-welcome-pulse 1.8s ease-in-out infinite}
+.dwarf-welcome-copy{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(30px,5vw,58px)}
+.dwarf-welcome-copy:after{content:"♜";position:absolute;right:22px;bottom:9px;color:#ddb76a10;font:140px/1 Georgia,serif;pointer-events:none}
+.dwarf-welcome-kicker{position:relative;z-index:1;margin:0 0 13px;color:#dfb66c;font-size:9px;font-weight:800;letter-spacing:.22em;text-transform:uppercase}
+.dwarf-welcome-copy h2{position:relative;z-index:1;margin:0 0 13px;color:#f6edda;font:700 clamp(28px,4vw,42px)/1.12 Cinzel,Georgia,serif;text-shadow:0 4px 25px #0009}
+.dwarf-welcome-copy>p{position:relative;z-index:1;max-width:380px;margin:0 0 17px;color:#c3ceca;font-size:13px;line-height:1.75}
+.dwarf-welcome-status{position:relative;z-index:1;min-height:40px;max-width:380px;margin:0;padding:10px 12px;border-left:2px solid #d9b878;border-radius:0 8px 8px 0;background:#d8b7750d;color:#d8d0bd;font-size:10px;line-height:1.6}
+@keyframes dwarf-welcome-arrive{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes dwarf-welcome-pulse{50%{opacity:.48;box-shadow:0 0 4px #e9bd70}}
+@media(max-width:680px){.dwarf-welcome{padding:12px}.dwarf-welcome-panel{grid-template-columns:1fr;grid-template-rows:auto auto;width:min(100%,470px);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow-y:auto}.dwarf-welcome-film{padding:14px 14px 0}.dwarf-welcome-film video{width:auto;height:min(32vh,260px);height:min(32dvh,260px);max-height:none}.dwarf-welcome-label{left:24px;right:24px;bottom:9px;width:max-content;max-width:calc(100% - 48px);font-size:7px}.dwarf-welcome-copy{padding:17px 24px 22px}.dwarf-welcome-copy:after{right:15px;bottom:3px;font-size:98px}.dwarf-welcome-kicker{margin-bottom:8px;font-size:8px}.dwarf-welcome-copy h2{margin-bottom:8px;font-size:clamp(24px,7vw,32px)}.dwarf-welcome-copy>p{margin-bottom:11px;font-size:11px;line-height:1.55}.dwarf-welcome-status{min-height:0;padding:8px 10px;font-size:9px}}
+@media(prefers-reduced-motion:reduce){.dwarf-welcome,.dwarf-welcome-panel,.dwarf-welcome-label i{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
+<div class="dwarf-welcome" id="dwarfWelcome" role="dialog" tabindex="0" aria-modal="true" aria-labelledby="dwarfWelcomeTitle" aria-describedby="dwarfWelcomeDescription">
+  <section class="dwarf-welcome-panel">
+    <div class="dwarf-welcome-film">
+      <video id="dwarfVideo" autoplay playsinline preload="auto" poster="zwerg-botschaft-whatsapp-poster.jpg" aria-label="Der Zwerg spricht seine Botschaft für Kronenfall">
+        <source src="zwerg-botschaft-whatsapp.mp4" type="video/mp4">
+        Dein Browser kann dieses Video leider nicht abspielen.
+      </video>
+      <div class="dwarf-welcome-label"><i aria-hidden="true"></i><span id="dwarfVideoLabel">DER HÜTER DES WALDES · KRONENFALL</span></div>
+    </div>
+    <div class="dwarf-welcome-copy">
+      <div class="dwarf-welcome-kicker">✦ Ein Bote aus dem Wald</div>
+      <h2 id="dwarfWelcomeTitle">Willkommen in Kronenfall</h2>
+      <p id="dwarfWelcomeDescription">Der Zwerg hat eine Botschaft für dich. Lausche seinen Worten und tritt ein in die Spielewelten.</p>
+      <p class="dwarf-welcome-status" id="dwarfWelcomeStatus" role="status" aria-live="polite">Der Zwerg beginnt seine Botschaft.</p>
+    </div>
+  </section>
+</div>
 <div class="page">
 <header>
 <a class="brand" href="index.html" aria-label="Kronenfall Spielewelten">
@@ -146,6 +185,81 @@ var pattern='rbgyprbygrpygbrypgybrgrbyrpgbygybrp';var grid=document.getElementBy
 for(var i=0;i<30;i++){var gem=document.createElement('i');gem.className='gem '+({r:'red',b:'blue',y:'yellow',g:'green',p:'purple'})[pattern[(i*7+Math.floor(i/6)*3)%pattern.length]];grid.appendChild(gem);}
 function updateMood(){var h=new Date().getHours(),evening=h>=18||h<8;document.body.classList.toggle('evening',evening);document.getElementById('timeMood').textContent=evening?'✦ ABENDSTIMMUNG':'✦ DEINE SPIELEWELT';}
 updateMood();window.setInterval(updateMood,60000);window.addEventListener('focus',updateMood);document.addEventListener('visibilitychange',updateMood);
+})();
+</script>
+<script>
+(function(){
+  var overlay=document.getElementById('dwarfWelcome');
+  var video=document.getElementById('dwarfVideo');
+  var status=document.getElementById('dwarfWelcomeStatus');
+  var videoLabel=document.getElementById('dwarfVideoLabel');
+  var page=document.querySelector('.page');
+  var closed=false;
+  var blocked=false;
+  var gestureSeen=false;
+  var playing=false;
+  if(!overlay||!video)return;
+  document.body.classList.add('dwarf-welcome-open');
+  if(page)page.inert=true;
+  function closeIntro(){
+    if(closed)return;
+    closed=true;
+    overlay.classList.add('is-leaving');
+    overlay.setAttribute('aria-hidden','true');
+    video.pause();
+    window.setTimeout(function(){
+      overlay.hidden=true;
+      document.body.classList.remove('dwarf-welcome-open');
+      if(page)page.inert=false;
+    },460);
+  }
+  function markPlaying(){
+    playing=true;
+    blocked=false;
+    status.textContent='Der Zwerg spricht zu dir.';
+    videoLabel.textContent='DIE BOTSCHAFT AUS DEM WALD';
+  }
+  function showPlaybackError(){
+    status.textContent='Die Zwergen-Botschaft konnte nicht geladen werden.';
+    window.setTimeout(closeIntro,2500);
+  }
+  function startWithSound(){
+    if(playing||closed)return;
+    blocked=false;
+    video.muted=false;
+    video.volume=1;
+    try{video.currentTime=0;}catch(error){}
+    var attempt=video.play();
+    if(attempt&&typeof attempt.then==='function')attempt.then(markPlaying).catch(function(){blocked=true;status.textContent='Der Browser erlaubt den Ton noch nicht. Klicke erneut irgendwo auf das Intro.';});
+    else markPlaying();
+  }
+  function onFirstGesture(){
+    if(playing||closed)return;
+    gestureSeen=true;
+    if(blocked)startWithSound();
+  }
+  function onAutoplayBlocked(error){
+    if(error&&error.name!=='NotAllowedError'){
+      showPlaybackError();
+      return;
+    }
+    blocked=true;
+    video.pause();
+    status.textContent='Klicke einmal irgendwo auf das Intro, damit der Zwerg mit Ton spricht.';
+    if(gestureSeen)startWithSound();
+  }
+  overlay.addEventListener('pointerdown',onFirstGesture);
+  overlay.addEventListener('keydown',function(event){
+    if(event.key==='Enter'||event.key===' '){event.preventDefault();onFirstGesture();}
+  });
+  video.addEventListener('ended',closeIntro);
+  video.addEventListener('error',showPlaybackError);
+  video.muted=false;
+  video.volume=1;
+  var attempt=video.play();
+  if(attempt&&typeof attempt.then==='function')attempt.then(markPlaying).catch(onAutoplayBlocked);
+  else markPlaying();
+  window.setTimeout(closeIntro,26000);
 })();
 </script>
 </body>
