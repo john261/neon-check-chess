@@ -124,6 +124,9 @@ html.evening-theme .button:hover{border-color:#edc17e;background:linear-gradient
 <style id="gentle-snow-style">
 #gentleSnow{position:fixed;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;opacity:.9;display:none}
 html.winter-season #gentleSnow{display:block}
+.snowflake{position:absolute;top:-12vh;left:var(--x);display:block;width:var(--size);height:var(--height);border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(218,237,251,.78));box-shadow:0 0 var(--glow) rgba(225,241,255,.72);filter:blur(var(--soft));opacity:var(--alpha);pointer-events:none;will-change:transform;animation:snowfall var(--duration) linear var(--delay) infinite}
+.snowflake-streak{border-radius:70%;background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.98) 45%,rgba(220,238,252,.66));}
+@keyframes snowfall{0%{transform:translate3d(0,-12vh,0) rotate(0deg)}34%{transform:translate3d(var(--drift-a),34vh,0) rotate(var(--turn))}69%{transform:translate3d(var(--drift-b),69vh,0) rotate(250deg)}100%{transform:translate3d(var(--drift-c),112vh,0) rotate(360deg)}}
 .shell{position:relative;z-index:2}
 html.winter-season body{background-color:#11121b;background-image:linear-gradient(180deg,rgba(6,12,18,.18),rgba(7,10,18,.42)),url("kronenfall-winter.png");background-position:center,center 50%;background-size:cover,cover;background-repeat:no-repeat,no-repeat;background-attachment:fixed,fixed}
 html.evening-theme.winter-season body{background-image:linear-gradient(180deg,rgba(27,18,40,.34),rgba(8,9,22,.62)),url("kronenfall-winter.png")}
@@ -132,7 +135,7 @@ html.evening-theme.winter-season .timeAtmosphere{background-image:linear-gradien
 @media(prefers-reduced-motion:reduce){#gentleSnow{opacity:.68}}
 </style></head>
 <body>
-<canvas id="gentleSnow" aria-hidden="true"></canvas>
+<div id="gentleSnow" class="snow-layer" aria-hidden="true"></div>
 <div class="timeAtmosphere" id="timeAtmosphere" aria-hidden="true"><div class="timeDuskWash"></div><div class="timeWoodTorch" aria-hidden="true"><span class="torchGlow"></span><img class="woodTorchFlame" src="evening-brazier-fire.png" alt=""><img class="woodTorchBody" src="evening-brazier-body.png" alt=""><span class="torchGround"></span></div></div>
 <div class="shell">
 <header class="top"><div class="brand"><div class="sigil">♜</div><div><h1>KRONENFALL</h1><small>CHRONIK DER SCHLACHTEN</small></div></div><div class="topRight"><span class="timeThemeLabel" id="timeThemeLabel" aria-live="polite">✦ ABENDSTIMMUNG</span><button class="button" id="soundBtn" onclick="toggleSound()">♫ Ton: Aus</button><select class="musicSelect" id="musicTrackSelect" aria-label="Hintergrundmusik auswählen" title="Soundtrack auswählen" onchange="changeMusicTrack(this.value)"><option value="across-the-gilded-valley.mp3">Across the Gilded Valley</option><option value="beneath-the-ancient-boughs.mp3">Beneath the Ancient Boughs</option><option value="Beneath_the_Canopy_of_Stars.mp3">Beneath the Canopy of Stars</option></select><button class="button" id="musicBtn" title="Die Musik startet spätestens mit deinem ersten Spielzug" onclick="toggleMusic()">♫ Musik: Aus</button></div></header>
@@ -227,54 +230,39 @@ restoreMusicTrack();restoreSavedGame();updateUI();var joining=new URLSearchParam
 </script>
 <script id="automatic-time-theme">(function(){function updateTimeTheme(){var d=new Date(),hour=d.getHours(),month=d.getMonth(),evening=hour>=18||hour<8,winter=month>=10||month===0,root=document.documentElement;root.classList.toggle('evening-theme',evening);root.classList.toggle('winter-season',winter);var label=document.getElementById('timeThemeLabel');if(label){label.textContent=evening?'✦ ABENDSTIMMUNG':'';label.setAttribute('aria-hidden',evening?'false':'true');}}updateTimeTheme();window.setInterval(updateTimeTheme,60000);window.addEventListener('focus',updateTimeTheme);document.addEventListener('visibilitychange',updateTimeTheme);})();</script>
 <script id="gentle-snow-script">(function(){
-var root=document.documentElement,media=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)'),reduced=!!(media&&media.matches);
-function mount(canvas){
- if(!canvas)return;
- var ctx=canvas.getContext('2d',{alpha:true}),w=0,h=0,dpr=1,flakes=[],raf=0,last=0;
- function active(){return root.classList.contains('winter-season')&&canvas.isConnected&&canvas.getClientRects().length>0;}
- function makeFlake(){
-  var depth=Math.random(),r=1.15+Math.pow(depth,1.55)*4.35;
-  return{x:Math.random()*w,y:Math.random()*h,r:r,depth:depth,v:reduced?18+depth*32:32+depth*58,drift:reduced?-3+Math.random()*6:-8+Math.random()*16,sway:reduced?1.5+depth*5:4+depth*14,phase:Math.random()*6.28,rotation:Math.random()*6.28,spin:reduced?-.2+Math.random()*.4:-.42+Math.random()*.84,alpha:reduced?.30+depth*.38:.34+depth*.42,soft:depth>.68?1.5+depth*3:0,streak:!reduced&&depth>.75&&Math.random()<.32};
- }
- function resize(){
-  w=window.innerWidth;h=window.innerHeight;dpr=Math.min(window.devicePixelRatio||1,1.25);
-  canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
-  var count=reduced?Math.max(70,Math.min(180,Math.round(w*h/10000))):Math.max(64,Math.min(210,Math.round(w*h/9500)));
-  flakes=Array.from({length:count},makeFlake);flakes.sort(function(a,b){return a.depth-b.depth;});
- }
- function draw(f){
-  ctx.save();ctx.translate(f.x,f.y);ctx.rotate(f.rotation);ctx.globalAlpha=f.alpha;
-  ctx.shadowColor='rgba(226,239,255,.78)';ctx.shadowBlur=f.soft;
-  ctx.fillStyle='#fbfdff';ctx.beginPath();ctx.ellipse(0,0,f.r*.74,f.r*1.08,0,0,Math.PI*2);ctx.fill();
-  if(f.streak){ctx.shadowBlur=0;ctx.globalAlpha=f.alpha*.28;ctx.strokeStyle='#f4f9ff';ctx.lineWidth=.65;ctx.beginPath();ctx.moveTo(0,-f.r*2.6);ctx.lineTo(0,-f.r*.9);ctx.stroke();}
-  ctx.restore();
- }
- function paint(now,dt,move){
-  ctx.clearRect(0,0,w,h);
-  var broadWind=Math.sin(now*.00013)*7+Math.sin(now*.00031)*2.6;
-  for(var i=0;i<flakes.length;i++){
-   var f=flakes[i];
-   if(move){f.y+=f.v*dt;f.x+=(f.drift+broadWind+Math.sin(now*.00062+f.phase)*f.sway)*dt;f.rotation+=f.spin*dt;
-    if(f.y>h+12){f.y=-12;f.x=Math.random()*w;}
-    if(f.x<-14)f.x=w+12;else if(f.x>w+14)f.x=-12;
-   }
-   draw(f);
+var motion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)');
+function mount(layer){
+ if(!layer||layer.dataset.snowMounted)return;
+ layer.dataset.snowMounted='true';
+ var reduced=!!(motion&&motion.matches),timer=0;
+ function rebuild(){
+  var w=window.innerWidth,h=window.innerHeight;
+  var count=reduced?Math.max(70,Math.min(140,Math.round(w*h/15000))):Math.max(80,Math.min(170,Math.round(w*h/12000)));
+  layer.replaceChildren();
+  for(var i=0;i<count;i++){
+   var depth=Math.random(),size=1.2+Math.pow(depth,1.65)*4.6;
+   var duration=(reduced?20:11)+depth*(reduced?15:13)+Math.random()*3;
+   var drift=(Math.random()-.5)*(reduced?42:78),flake=document.createElement('i');
+   flake.className='snowflake'+(depth>.82&&Math.random()<.3?' snowflake-streak':'');
+   flake.setAttribute('aria-hidden','true');
+   flake.style.setProperty('--x',(Math.random()*100).toFixed(2)+'%');
+   flake.style.setProperty('--size',size.toFixed(2)+'px');
+   flake.style.setProperty('--height',(size*(1.1+Math.random()*.85)).toFixed(2)+'px');
+   flake.style.setProperty('--alpha',(.32+depth*.44).toFixed(2));
+   flake.style.setProperty('--soft',(depth>.7?(depth*1.15).toFixed(2):0)+'px');
+   flake.style.setProperty('--glow',(1+depth*3).toFixed(1)+'px');
+   flake.style.setProperty('--duration',duration.toFixed(2)+'s');
+   flake.style.setProperty('--delay',(-Math.random()*duration).toFixed(2)+'s');
+   flake.style.setProperty('--drift-a',(drift*.42).toFixed(1)+'px');
+   flake.style.setProperty('--drift-b',drift.toFixed(1)+'px');
+   flake.style.setProperty('--drift-c',(drift*1.5+(Math.random()-.5)*12).toFixed(1)+'px');
+   flake.style.setProperty('--turn',(160+Math.random()*220).toFixed(0)+'deg');
+   layer.appendChild(flake);
   }
-  ctx.globalAlpha=1;ctx.shadowBlur=0;
  }
- function stop(){if(raf)cancelAnimationFrame(raf);raf=0;ctx.clearRect(0,0,w,h);}
- function frame(now){
-  raf=0;if(document.hidden||!active()){if(!active())ctx.clearRect(0,0,w,h);return;}
-  if(now-last<30){raf=requestAnimationFrame(frame);return;}
-  var dt=Math.min((now-last)/1000,.09);last=now;paint(now,dt,true);raf=requestAnimationFrame(frame);
- }
- function start(){
-  if(!active()){stop();return;}
-  if(!document.hidden&&!raf){last=performance.now();raf=requestAnimationFrame(frame);}
- }
- resize();start();window.addEventListener('resize',function(){resize();if(reduced&&active())paint(0,0,false);});
- document.addEventListener('visibilitychange',start);new MutationObserver(start).observe(root,{attributes:true,attributeFilter:['class']});
- if(media){var onMotionChange=function(e){reduced=e.matches;resize();start();};if(media.addEventListener)media.addEventListener('change',onMotionChange);else if(media.addListener)media.addListener(onMotionChange);}
+ rebuild();
+ window.addEventListener('resize',function(){clearTimeout(timer);timer=setTimeout(rebuild,140);},{passive:true});
+ if(motion){var changed=function(e){reduced=e.matches;rebuild();};if(motion.addEventListener)motion.addEventListener('change',changed);else if(motion.addListener)motion.addListener(changed);}
 }
 mount(document.getElementById('gentleSnow'));mount(document.getElementById('welcomeSnow'));
 })();</script></body></html>
