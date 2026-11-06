@@ -234,12 +234,12 @@ function mount(canvas){
  function active(){return root.classList.contains('winter-season')&&canvas.isConnected&&canvas.getClientRects().length>0;}
  function makeFlake(){
   var depth=Math.random(),r=1.15+Math.pow(depth,1.55)*4.35;
-  return{x:Math.random()*w,y:Math.random()*h,r:r,depth:depth,v:32+depth*58,drift:-8+Math.random()*16,sway:4+depth*14,phase:Math.random()*6.28,rotation:Math.random()*6.28,spin:-.42+Math.random()*.84,alpha:.34+depth*.42,soft:depth>.68?1.5+depth*3:0,streak:depth>.75&&Math.random()<.32};
+  return{x:Math.random()*w,y:Math.random()*h,r:r,depth:depth,v:reduced?18+depth*32:32+depth*58,drift:reduced?-3+Math.random()*6:-8+Math.random()*16,sway:reduced?1.5+depth*5:4+depth*14,phase:Math.random()*6.28,rotation:Math.random()*6.28,spin:reduced?-.2+Math.random()*.4:-.42+Math.random()*.84,alpha:reduced?.30+depth*.38:.34+depth*.42,soft:depth>.68?1.5+depth*3:0,streak:!reduced&&depth>.75&&Math.random()<.32};
  }
  function resize(){
   w=window.innerWidth;h=window.innerHeight;dpr=Math.min(window.devicePixelRatio||1,1.25);
   canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
-  var count=Math.max(64,Math.min(210,Math.round(w*h/9500)));
+  var count=reduced?Math.max(70,Math.min(180,Math.round(w*h/10000))):Math.max(64,Math.min(210,Math.round(w*h/9500)));
   flakes=Array.from({length:count},makeFlake);flakes.sort(function(a,b){return a.depth-b.depth;});
  }
  function draw(f){
@@ -270,12 +270,11 @@ function mount(canvas){
  }
  function start(){
   if(!active()){stop();return;}
-  if(reduced){paint(0,0,false);return;}
   if(!document.hidden&&!raf){last=performance.now();raf=requestAnimationFrame(frame);}
  }
  resize();start();window.addEventListener('resize',function(){resize();if(reduced&&active())paint(0,0,false);});
  document.addEventListener('visibilitychange',start);new MutationObserver(start).observe(root,{attributes:true,attributeFilter:['class']});
- if(media){var onMotionChange=function(e){reduced=e.matches;start();};if(media.addEventListener)media.addEventListener('change',onMotionChange);else if(media.addListener)media.addListener(onMotionChange);}
+ if(media){var onMotionChange=function(e){reduced=e.matches;resize();start();};if(media.addEventListener)media.addEventListener('change',onMotionChange);else if(media.addListener)media.addListener(onMotionChange);}
 }
 mount(document.getElementById('gentleSnow'));mount(document.getElementById('welcomeSnow'));
 })();</script></body></html>
