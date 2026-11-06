@@ -122,7 +122,7 @@ html.evening-theme .button:hover{border-color:#edc17e;background:linear-gradient
 @media(prefers-reduced-motion:reduce){.timeAtmosphere{transition:none}.timeDuskWash:after{animation:none}}
 </style><script>(function(){try{var d=new Date(),h=d.getHours(),m=d.getMonth(),r=document.documentElement;r.classList.toggle('evening-theme',h>=18||h<8);r.classList.toggle('winter-season',m>=10||m===0)}catch(e){}})();</script>
 <style id="gentle-snow-style">
-#gentleSnow{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:.88;display:none}
+#gentleSnow{position:fixed;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;opacity:.9;display:none}
 html.winter-season #gentleSnow{display:block}
 .shell{position:relative;z-index:2}
 html.winter-season body{background-color:#11121b;background-image:linear-gradient(180deg,rgba(6,12,18,.18),rgba(7,10,18,.42)),url("kronenfall-winter.png");background-position:center,center 50%;background-size:cover,cover;background-repeat:no-repeat,no-repeat;background-attachment:fixed,fixed}
@@ -233,13 +233,13 @@ function mount(canvas){
  var ctx=canvas.getContext('2d',{alpha:true}),w=0,h=0,dpr=1,flakes=[],raf=0,last=0;
  function active(){return root.classList.contains('winter-season')&&canvas.isConnected&&canvas.getClientRects().length>0;}
  function makeFlake(){
-  var depth=Math.random(),r=1+Math.pow(depth,1.72)*3.1;
-  return{x:Math.random()*w,y:Math.random()*h,r:r,depth:depth,v:22+depth*50,drift:-5+Math.random()*10,sway:2+depth*12,phase:Math.random()*6.28,rotation:Math.random()*6.28,spin:-.36+Math.random()*.72,alpha:.28+depth*.42,soft:depth>.76?1+depth*2.4:0,streak:depth>.84&&Math.random()<.24};
+  var depth=Math.random(),r=1.15+Math.pow(depth,1.55)*4.35;
+  return{x:Math.random()*w,y:Math.random()*h,r:r,depth:depth,v:32+depth*58,drift:-8+Math.random()*16,sway:4+depth*14,phase:Math.random()*6.28,rotation:Math.random()*6.28,spin:-.42+Math.random()*.84,alpha:.34+depth*.42,soft:depth>.68?1.5+depth*3:0,streak:depth>.75&&Math.random()<.32};
  }
  function resize(){
   w=window.innerWidth;h=window.innerHeight;dpr=Math.min(window.devicePixelRatio||1,1.25);
   canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
-  var count=Math.max(54,Math.min(126,Math.round(w*h/16500)));
+  var count=Math.max(64,Math.min(210,Math.round(w*h/9500)));
   flakes=Array.from({length:count},makeFlake);flakes.sort(function(a,b){return a.depth-b.depth;});
  }
  function draw(f){
@@ -266,7 +266,7 @@ function mount(canvas){
  function frame(now){
   raf=0;if(document.hidden||!active()){if(!active())ctx.clearRect(0,0,w,h);return;}
   if(now-last<30){raf=requestAnimationFrame(frame);return;}
-  var dt=Math.min((now-last)/1000,.065);last=now;paint(now,dt,true);raf=requestAnimationFrame(frame);
+  var dt=Math.min((now-last)/1000,.09);last=now;paint(now,dt,true);raf=requestAnimationFrame(frame);
  }
  function start(){
   if(!active()){stop();return;}
