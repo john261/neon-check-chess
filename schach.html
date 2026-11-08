@@ -147,7 +147,13 @@ html.winter-season .boardCaption{position:relative;z-index:2;margin-top:10px;pad
 html.winter-season .boardCaption span:last-child{color:#f0cf83}
 @media(max-width:700px){html.winter-season body{background-position:center,58% center;background-attachment:scroll,scroll}html.winter-season .stage{padding:42px 13px 18px;border-radius:18px}.holiday-stage-frame{inset:0}html.winter-season .boardWrap{border-width:8px;border-radius:12px}html.winter-season .boardCaption{padding:8px 7px;font-size:8px}}
 @media(prefers-reduced-motion:reduce){#gentleSnow{opacity:.68}}
- .readyOverlay{z-index:11}.readyCard{text-align:left;width:min(92vw,440px);padding:28px}.readyCard h2{font:600 23px Cinzel,serif;color:#f2e7cf;margin:11px 0}.readyCard p{color:#b8c4c6;font-size:12px;line-height:1.6}.readyCard .primary{width:100%;margin-top:8px}.readyCard .primary:disabled{opacity:.76;cursor:default;transform:none}.readyPeerStatus{padding-top:10px;border-top:1px solid #ffffff18}</style></head>
+ .readyOverlay{z-index:11}.readyCard{text-align:left;width:min(92vw,440px);padding:28px}.readyCard h2{font:600 23px Cinzel,serif;color:#f2e7cf;margin:11px 0}.readyCard p{color:#b8c4c6;font-size:12px;line-height:1.6}.readyCard .primary{width:100%;margin-top:8px}.readyCard .primary:disabled{opacity:.76;cursor:default;transform:none}.readyPeerStatus{padding-top:10px;border-top:1px solid #ffffff18}
+/* Keep both players' board colors identical across device themes and local time. */
+.board{color-scheme:light}
+.board .tile{-webkit-appearance:none;appearance:none;color-scheme:light;forced-color-adjust:none}
+html .board .tile.lightSquare,html.evening-theme .board .tile.lightSquare{background:linear-gradient(145deg,#f5f0e2,#d8cfbc)!important}
+html .board .tile.darkSquare,html.evening-theme .board .tile.darkSquare{background:linear-gradient(145deg,#566a72,#344750)!important}
+</style></head>
 <body>
 <div id="gentleSnow" class="snow-layer" aria-hidden="true"></div>
 <div class="timeAtmosphere" id="timeAtmosphere" aria-hidden="true"><div class="timeDuskWash"></div><div class="timeWoodTorch" aria-hidden="true"><span class="torchGlow"></span><img class="woodTorchFlame" src="evening-brazier-fire.png" alt=""><img class="woodTorchBody" src="evening-brazier-body.png" alt=""><span class="torchGround"></span></div></div>
