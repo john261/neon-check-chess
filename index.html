@@ -169,7 +169,7 @@ html.winter-season .garland-bulb{opacity:.92;animation:holiday-light-glow 2.8s e
 html.winter-season .holiday-tree{right:12px;bottom:10px;filter:drop-shadow(0 0 8px rgba(193,228,242,.7))}
 @media(max-width:680px){html.winter-season .dwarf-welcome-panel{width:min(100%,520px);min-height:0;max-height:calc(100dvh - 24px);grid-template-columns:1fr;grid-template-rows:auto auto}html.winter-season .dwarf-welcome-film{padding:14px 14px 0}html.winter-season .dwarf-welcome-frame{width:min(100%,420px,61dvh);aspect-ratio:1.42}html.winter-season .dwarf-welcome-label{left:23px;right:23px;bottom:8px}html.winter-season .dwarf-welcome-copy{padding:76px 24px 26px}html.winter-season .dwarf-welcome-status{max-width:calc(100% - 60px)}html.winter-season .holiday-garland{left:16px;right:16px;top:4px;height:48px}html.winter-season .holiday-tree{right:10px;bottom:8px;width:54px;height:70px}}
 
-html.winter-season .dwarf-welcome-frame{background:#10141c url("winter-gnom-poster-wide.jpg") center/cover no-repeat!important}
+html.winter-season .dwarf-welcome-frame{background:#10141c url("winter-gnom-poster-wide.jpg?v=20261108b") center/cover no-repeat!important}
 html.winter-season .dwarf-welcome-frame video{object-position:center}
 </style></head>
 <body>
@@ -330,14 +330,14 @@ video.addEventListener('ended',closeIntro);
 video.addEventListener('error',showPlaybackError);
 if(winterSeason){
  overlay.classList.add('winter-gnome-intro');
- if(portrait){portrait.src='winter-gnom-poster-wide.jpg';portrait.alt='Wintergnom beim Winterfest in Kronenfall';}
- video.poster='winter-gnom-poster-wide.jpg';
+ if(portrait){portrait.src='winter-gnom-poster-wide.jpg?v=20261108b';portrait.alt='Wintergnom beim Winterfest in Kronenfall';}
+ video.poster='winter-gnom-poster-wide.jpg?v=20261108b';
  video.setAttribute('aria-label','Der Wintergnom spricht seine Botschaft für Kronenfall');
  if(kicker)kicker.textContent='✦ Ein Bote des Winterfests';
  if(videoLabel)videoLabel.textContent='DER WINTERGNOM · KRONENFALL';
  if(description)description.textContent='Der Wintergnom begrüßt dich mit seiner Stimme. Lausche seiner Botschaft und tritt danach in die Spielewelten ein.';
  status.textContent='Der Wintergnom beginnt seine Botschaft.';
- video.src='winter-gnom-begruessung-wide.mp4';
+ video.src='winter-gnom-begruessung-wide.mp4?v=20261108b';
 }else{
  video.setAttribute('aria-label','Der Hüter des Waldes spricht seine Botschaft für Kronenfall');
  var payload=document.getElementById('dwarfVideoPayload');
